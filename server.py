@@ -3,6 +3,7 @@ import subprocess
 import os
 from werkzeug.utils import secure_filename
 import traceback
+from waitress import serve
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -47,5 +48,6 @@ def start_verification():
         traceback.print_exc()
         return jsonify({'message': f'Error occurred: {str(e)}'}), 500
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+
+if __name__ == "__main__":
+    serve(app, host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
