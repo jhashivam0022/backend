@@ -4,8 +4,10 @@ import os
 from werkzeug.utils import secure_filename
 import traceback
 from waitress import serve
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app) 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 # Make sure uploads directory exists
@@ -49,5 +51,7 @@ def start_verification():
         return jsonify({'message': f'Error occurred: {str(e)}'}), 500
 
 
+
 if __name__ == "__main__":
     serve(app, host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+
