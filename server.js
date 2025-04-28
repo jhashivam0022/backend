@@ -7,6 +7,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
+const port = process.env.PORT || 5000;
 const upload = multer({ dest: 'uploads/' });
 
 app.post('/start-verification', upload.single('file'), (req, res) => {
@@ -31,7 +32,6 @@ app.post('/start-verification', upload.single('file'), (req, res) => {
   });
 });
 
-const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
