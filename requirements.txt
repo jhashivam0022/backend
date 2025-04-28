@@ -1,6 +1,7 @@
 Flask==2.3.2
 selenium==4.18.1
 pandas==1.5.3
+numpy==1.23.3
 Werkzeug==2.3.3
 waitress==2.1.0
 flask-cors
