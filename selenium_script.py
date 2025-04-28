@@ -3,6 +3,7 @@ import time
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -14,23 +15,26 @@ file_path = sys.argv[1]
 # Read the CSV with no header
 df = pd.read_csv(file_path, header=None)
 
-# Extract credentials from the DataFrame (assumes credentials are in specific columns)
+# Extract credentials from the DataFrame
 user_id = df.iloc[1, 3]  # D2 (user ID)
 password = df.iloc[2, 3]  # D3 (password)
 TAN_for_Deductor = df.iloc[3, 3]  # D4 (TAN for Deductor)
 
 # Setup Firefox options
 options = Options()
-options.headless = False  # Set to True to run headless
+options.headless = False  # Set to True if you want to run browser invisibly
+
+# Point to geckodriver
+service = Service(executable_path="./geckodriver.exe")
 
 # Initialize the Firefox WebDriver
-driver = webdriver.Firefox(options=options)
+driver = webdriver.Firefox(service=service, options=options)
 
 # Navigate to the TRACES login page
 driver.get("https://www.tdscpc.gov.in/app/login.xhtml?usr=Ded")
 
 try:
-    # Fill in the login form with user credentials
+    # Fill in login form
     driver.find_element(By.ID, "userId").send_keys(user_id)
     driver.find_element(By.ID, "psw").send_keys(password)
     driver.find_element(By.ID, "tanpan").send_keys(TAN_for_Deductor)
@@ -42,7 +46,7 @@ try:
     )
     print("Login successful!")
 
-    # Proceed to the PAN Verification page
+    # Navigate to PAN Verification page
     driver.get("https://www.tdscpc.gov.in/app/ded/panverify.xhtml")
     print("Navigated to PAN verification page.")
     driver.minimize_window()
@@ -85,7 +89,7 @@ try:
         # Add to status list
         status_list.append(status)
 
-    # Add status back to DataFrame (assumes 2nd column is for status, index 1)
+    # Add status back to DataFrame
     df.loc[1:, 1] = status_list
 
     # Save to CSV
